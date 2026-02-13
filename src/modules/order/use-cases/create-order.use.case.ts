@@ -12,7 +12,7 @@ export class CreateOrderUseCase {
         private readonly dataSource: DataSource
     ) {}
 
-    async execute(createOrderDto: CreateOrderDto): Promise<any> {
+    async execute(createOrderDto: CreateOrderDto) {
         return this.dataSource.transaction(async (manager) => {
             const orderItems: OrderItemEntity[] = [];
             let totalAmount = 0;
@@ -54,21 +54,19 @@ export class CreateOrderUseCase {
 
             const savedOrder = await manager.save(order);
             
-            const orderResponse = {
+            return {
                 id: savedOrder.id,
                 customerName: savedOrder.customerName,
-                totalAmount: savedOrder.totalAmount,
+                totalAmount: Number(savedOrder.totalAmount),
                 status: savedOrder.status,
                 createdAt: savedOrder.createdAt,
-                items: savedOrder.items.map(item => ({
+                items: orderItems.map(item => ({
                     productName: item.product.name,
                     quantity: item.quantity,
-                    unitPrice: item.unitPrice,
-                    totalPrice: item.totalPrice
+                    unitPrice: Number(item.unitPrice),
+                    totalPrice: Number(item.totalPrice)
                 }))
             };
-            
-            return orderResponse;
         });
     }
 }

@@ -1,7 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { CreateOrderUseCase } from './use-cases/create-order.use.case';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { OrderEntity } from './entity/order.entity';
 
 @Controller('orders')
 export class OrderController {
@@ -10,7 +9,7 @@ export class OrderController {
   ) {}
 
   @Post()
-  async create(@Body() createOrderDto: CreateOrderDto): Promise<OrderEntity> {
+  async create(@Body() createOrderDto: CreateOrderDto) {
     return this.createOrderUseCase.execute(createOrderDto);
   }
 }

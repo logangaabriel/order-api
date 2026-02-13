@@ -2,7 +2,7 @@
 
 ### Variables
 @baseUrl = http://localhost:3000
-@productId1 = 6214cddd-893b-4431-8339-5612296449e3
+@productId1 = 19c9b268-2084-47c2-b911-ddefcc2ffa4c
 @productId2 = d4227ff0-22d5-4e7b-b15d-c7ca610c55e4
 @orderId = {{create_order.response.body.id}}
 
@@ -127,7 +127,7 @@ PATCH {{baseUrl}}/products/{{productId1}}
 Content-Type: application/json
 
 {
-  "active": false
+  "active": true
 }
 
 ###
