@@ -13,8 +13,7 @@ export class CancelOrderUseCase {
     async execute(orderId: string) {
       return this.dataSource.transaction(async (manager) => {
           const order = await manager.findOne(OrderEntity, {
-              where: { id: orderId },
-              relations: ['items', 'items.product']
+              where: { id: orderId }
           });
 
           if (!order) {
@@ -28,7 +27,11 @@ export class CancelOrderUseCase {
           order.status = OrderStatus.CANCELLED;
           const savedOrder = await manager.save(order); 
           
-          return savedOrder;
+          return {
+              id: savedOrder.id,
+              status: savedOrder.status,
+              updatedAt: savedOrder.updatedAt
+          };
       });
     }
 }

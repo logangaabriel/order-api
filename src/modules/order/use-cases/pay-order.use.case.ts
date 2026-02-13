@@ -34,16 +34,8 @@ export class PayOrderUseCase {
 
             return {
                 id: savedOrder.id,
-                customerName: savedOrder.customerName,
-                totalAmount: Number(savedOrder.totalAmount),
                 status: savedOrder.status,
-                updatedAt: savedOrder.updatedAt,
-                items: savedOrder.items.map(item => ({
-                    productName: item.product.name,
-                    quantity: item.quantity,
-                    unitPrice: Number(item.unitPrice),
-                    totalPrice: Number(item.totalPrice)
-                }))
+                updatedAt: savedOrder.updatedAt
             };
         });
     }
