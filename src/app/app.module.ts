@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { typeOrmConfig } from '../config/typeorm.config';
 import { ProductModule } from '../modules/product/product.module';
 import { OrderModule } from '../modules/order/order.module';
+import { UserModule } from '../modules/user/user.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { OrderModule } from '../modules/order/order.module';
     TypeOrmModule.forRoot(typeOrmConfig),
     ProductModule,
     OrderModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

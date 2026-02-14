@@ -1,10 +1,11 @@
 
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { OrderEntity } from "../entity/order.entity";
 import { OrderItemEntity } from "../entity/order-item.entity";
 import { CreateOrderDto } from "../dto/create-order.dto";
 import { ProductEntity } from "../../product/entity/product.entity";
+import { UserEntity } from "../../user/entity/user.entity";
 
 @Injectable()
 export class CreateOrderUseCase {
@@ -16,6 +17,18 @@ export class CreateOrderUseCase {
         return this.dataSource.transaction(async (manager) => {
             const orderItems: OrderItemEntity[] = [];
             let totalAmount = 0;
+
+            const users = await manager.find(UserEntity, {
+                where: { id: In(createOrderDto.userIds) }
+            });
+
+            if (users.length !== createOrderDto.userIds.length) {
+                const foundIds = new Set(users.map(user => user.id));
+                const missingIds = createOrderDto.userIds.filter(id => !foundIds.has(id));
+                throw new NotFoundException(`Usuários não encontrados: ${missingIds.join(', ')}`);
+            }
+
+            const primaryUser = users[0];
 
             for(const item of createOrderDto.items) {
                 const product = await manager.findOne(ProductEntity, { 
@@ -46,10 +59,11 @@ export class CreateOrderUseCase {
 
             const order = manager.create(OrderEntity, {
                 customerName: createOrderDto.customerName,
-                customerId: "00000000-0000-0000-0000-000000000000", 
-                customerEmail: "temp@email.com", 
+                customerId: primaryUser.id,
+                customerEmail: primaryUser.email,
                 totalAmount: totalAmount,
-                items: orderItems
+                items: orderItems,
+                users: users,
             });
 
             const savedOrder = await manager.save(order);
@@ -60,6 +74,12 @@ export class CreateOrderUseCase {
                 totalAmount: Number(savedOrder.totalAmount),
                 status: savedOrder.status,
                 createdAt: savedOrder.createdAt,
+                users: users.map(user => ({
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                })),
                 items: orderItems.map(item => ({
                     productName: item.product.name,
                     quantity: item.quantity,

@@ -6,6 +6,7 @@ import { DeleteProductUseCase } from './use-cases/delete-product.use-case';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entity/product.entity';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Controller('products')
 export class ProductController {
@@ -22,8 +23,8 @@ export class ProductController {
   }
 
   @Get()
-  async findAll(@Query('status') status?: 'active' | 'inactive'): Promise<ProductEntity[]> {
-    return this.findProductsUseCase.findAll(status);
+  async findAll(@Query() pagination: PaginationDto, @Query('status') status?: 'active' | 'inactive') {
+    return this.findProductsUseCase.findAll(pagination, status);
   }
 
   @Get(':id')
