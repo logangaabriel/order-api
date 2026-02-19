@@ -26,7 +26,16 @@ export class UpdateUserUseCase {
             }
         }
 
-        const updatedUser = this.dataSource.manager.merge(UserEntity, user, updateUserDto);
-        return this.dataSource.manager.save(updatedUser);
+        Object.assign(user, updateUserDto);
+        const savedUser = await this.dataSource.manager.save(user);
+        
+        return {
+            id: savedUser.id,
+            name: savedUser.name,
+            email: savedUser.email,
+            role: savedUser.role,
+            createdAt: savedUser.createdAt,
+            updatedAt: savedUser.updatedAt,
+        };
     }
 }

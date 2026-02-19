@@ -16,6 +16,9 @@ export class UserEntity {
     @Column({ nullable: false })
     password: string;
 
+    @Column({ nullable: true })
+    refreshTokenHash: string | null;
+
     @Column({
         type: 'enum',
         enum: UserRole,
