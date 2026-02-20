@@ -2,16 +2,16 @@ import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { NotFoundException } from "@nestjs/common";
-import { DeleteProductUseCase } from "../use-cases/delete-product.use-case";
+import { DeactivateProductUseCase } from "../use-cases/deactivate-product.use-case";
 import { ProductEntity } from "../entity/product.entity";
 
-describe('delete product', () => {
-    let deleteProductUseCase: DeleteProductUseCase
+describe('deactivate product', () => {
+    let deactivateProductUseCase: DeactivateProductUseCase
     let productRepository: Repository<ProductEntity>;
 
     beforeEach( async () => {
         const module = await Test.createTestingModule({
-            providers: [ DeleteProductUseCase, {
+            providers: [ DeactivateProductUseCase, {
                 provide: getRepositoryToken(ProductEntity),
                 useValue: {
                     findOne: jest.fn(),
@@ -20,11 +20,11 @@ describe('delete product', () => {
             }],
         }).compile();
 
-        deleteProductUseCase = module.get<DeleteProductUseCase>(DeleteProductUseCase);
+        deactivateProductUseCase = module.get<DeactivateProductUseCase>(DeactivateProductUseCase);
         productRepository = module.get<Repository<ProductEntity>>(getRepositoryToken(ProductEntity));
     });
 
-    it('should soft delete a product successfully', async () => {
+    it('should deactivate a product successfully', async () => {
         const productId = 'uuid-1';
         const existingProduct = {
             id: productId,
@@ -40,7 +40,7 @@ describe('delete product', () => {
         jest.spyOn(productRepository, 'findOne').mockResolvedValue(existingProduct);
         jest.spyOn(productRepository, 'save').mockResolvedValue({ ...existingProduct, active: false });
 
-        await expect(deleteProductUseCase.execute(productId)).resolves.not.toThrow();
+        await expect(deactivateProductUseCase.execute(productId)).resolves.not.toThrow();
         expect(productRepository.findOne).toHaveBeenCalledWith({ where: { id: productId, active: true } });
         expect(productRepository.save).toHaveBeenCalledWith({ ...existingProduct, active: false });
     });
@@ -50,7 +50,7 @@ describe('delete product', () => {
 
         jest.spyOn(productRepository, 'findOne').mockResolvedValue(null);
 
-        await expect(deleteProductUseCase.execute(productId)).rejects.toThrow(NotFoundException);
+        await expect(deactivateProductUseCase.execute(productId)).rejects.toThrow(NotFoundException);
         expect(productRepository.findOne).toHaveBeenCalledWith({ where: { id: productId, active: true } });
     });
 });

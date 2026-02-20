@@ -5,7 +5,7 @@ import { ProductEntity } from './entity/product.entity';
 import { CreateProductUseCase } from './use-cases/create-product.use.case';
 import { FindProductsUseCase } from './use-cases/find-products.use-case';
 import { UpdateProductUseCase } from './use-cases/update-product.use-case';
-import { DeleteProductUseCase } from './use-cases/delete-product.use-case';
+import { DeactivateProductUseCase } from './use-cases/deactivate-product.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ProductEntity])],
@@ -14,14 +14,14 @@ import { DeleteProductUseCase } from './use-cases/delete-product.use-case';
     CreateProductUseCase,
     FindProductsUseCase,
     UpdateProductUseCase,
-    DeleteProductUseCase,
+    DeactivateProductUseCase,
   ],
   exports: [
     TypeOrmModule,
     CreateProductUseCase,
     FindProductsUseCase,
     UpdateProductUseCase,
-    DeleteProductUseCase,
+    DeactivateProductUseCase,
   ],
 })
 export class ProductModule {}

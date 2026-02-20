@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpCode, Htt
 import { CreateProductUseCase } from './use-cases/create-product.use.case';
 import { FindProductsUseCase } from './use-cases/find-products.use-case';
 import { UpdateProductUseCase } from './use-cases/update-product.use-case';
-import { DeleteProductUseCase } from './use-cases/delete-product.use-case';
+import { DeactivateProductUseCase } from './use-cases/deactivate-product.use-case';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entity/product.entity';
@@ -14,7 +14,7 @@ export class ProductController {
     private readonly createProductUseCase: CreateProductUseCase,
     private readonly findProductsUseCase: FindProductsUseCase,
     private readonly updateProductUseCase: UpdateProductUseCase,
-    private readonly deleteProductUseCase: DeleteProductUseCase,
+    private readonly deactivateProductUseCase: DeactivateProductUseCase,
   ) {}
 
   @Post()
@@ -39,7 +39,7 @@ export class ProductController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.deleteProductUseCase.execute(id);
+  async deactivate(@Param('id') id: string): Promise<void> {
+    return this.deactivateProductUseCase.execute(id);
   }
 }
