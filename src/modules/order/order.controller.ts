@@ -8,6 +8,8 @@ import { CancelOrderUseCase } from './use-cases/cancel-order.use.case';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from './enum/order-status.enum';
 import { PaginationDto } from '../../common/dto/pagination.dto';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../user/enum/user-role.enum';
 
 @Controller('orders')
 export class OrderController {
@@ -35,11 +37,13 @@ export class OrderController {
     return this.payOrderUseCase.execute(id);
   }
 
+  @Roles(UserRole.ADMIN)
   @Patch(':id/prepare')
   async prepare(@Param('id') id: string) {
     return this.preparingOrderUseCase.execute(id);
   }
 
+  @Roles(UserRole.ADMIN)
   @Patch(':id/deliver')
   async deliver(@Param('id') id: string) {
     return this.deliveredOrderUseCase.execute(id);

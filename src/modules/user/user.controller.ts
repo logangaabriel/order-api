@@ -10,6 +10,7 @@ import { ResetPasswordUseCase } from './use-case/reset-password.use.case';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 import { UserRole } from './enum/user-role.enum';
 import { Public } from '../auth/decorators/public.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('users')
 export class UserController {
@@ -27,6 +28,7 @@ export class UserController {
     return this.createUserUseCase.execute(createUserDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Get()
   async findAll(@Query() pagination: PaginationDto, @Query('role') role?: UserRole) {
     return this.findUserUseCase.findAll(pagination, role);
@@ -42,6 +44,7 @@ export class UserController {
     return this.findUserUseCase.execute(id);
   }
 
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: string): Promise<void> {
